@@ -1,8 +1,11 @@
+/* Tailwind v4 imports */
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Dark mode variant */
 @custom-variant dark (&:is(.dark *));
 
+/* Theme variables */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -43,6 +46,7 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* Light mode */
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -78,6 +82,7 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* Dark mode */
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -112,11 +117,25 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Base styles */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* ⭐ REQUIRED FOR SHADCN DIALOG ⭐ */
+@layer components {
+  [data-slot="dialog-overlay"] {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50;
+  }
+
+  [data-slot="dialog-content"] {
+    @apply fixed left-1/2 top-1/2 z-50 w-full max-w-lg 
+    -translate-x-1/2 -translate-y-1/2 rounded-xl border 
+    bg-background p-6 shadow-xl;
   }
 }
