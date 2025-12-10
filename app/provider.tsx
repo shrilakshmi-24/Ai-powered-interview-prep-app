@@ -9,7 +9,7 @@ import { UserContextDetails } from "./context/userContextDetails";
 function Provider({ children }: { children: React.ReactNode }) {
     const { user } = useUser();
     const createUser = useMutation(api.user.CreateNewUser);
-    const {userDetail, setUserDetail} = useState()
+    const [userDetail, setUserDetail] = useState<any>(null);
     
     useEffect(() => {
         const createNewUser = async () => {
@@ -27,12 +27,10 @@ function Provider({ children }: { children: React.ReactNode }) {
         createNewUser();
     }, [user, createUser]);
 
-   return (<UserContextDetails.Provider value={{userDetail,setUserDetail}}>
-     <div>{children}</div>;
+   return (
+    <UserContextDetails.Provider value={{ userDetail, setUserDetail }}>
+      <div>{children}</div>
     </UserContextDetails.Provider>
-    
-    );
+  );
 } 
 export default Provider;
-
-export const userDetaileContext = ()=> createContext(userDetaileContext)
