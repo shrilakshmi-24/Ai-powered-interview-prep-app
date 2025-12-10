@@ -11,7 +11,7 @@ export function EmptySate() {
         width={180}
         height={180}
       />
-      <h2 className="text-xl font-semibold text-gray-800 p-100">
+      <h2 className="text-xl font-semibold text-gray-800 p-10">
         You do not have any Interview created
       </h2>
       <InterviewDialogue />
