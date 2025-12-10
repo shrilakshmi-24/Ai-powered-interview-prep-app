@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +14,14 @@ import ResumeUpload from "./ResumeUpload";
 import JobDescription from "./JobDescription";
 
 function InterviewDialogue() {
+  const [formData, setFormData] = useState<any>();
+  const onHandleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -40,7 +48,7 @@ function InterviewDialogue() {
           </TabsContent>
 
           <TabsContent value="job-description">
-            <JobDescription />
+            <JobDescription onHandleInputChange={onHandleInputChange} />
           </TabsContent>
         </Tabs>
 
