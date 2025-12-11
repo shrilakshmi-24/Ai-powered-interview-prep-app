@@ -25,7 +25,7 @@ function InterviewDialogue() {
   const [loading, setLoading] = useState(false);
   const dbResponse = useMutation(api.interview.saveInterviewQuestion);
 
-  const onHandleInputChange = (e: any) => {
+  const onHandleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -33,22 +33,36 @@ function InterviewDialogue() {
     });
   };
 
+  const canSubmit = () => {
+    // Can submit if there's a file OR both jobTitle and jobDescription are provided
+    return file || (formData?.jobTitle && formData?.jobDescription);
+  };
+
   const onSubmit = async () => {
-    if (!file) return;
+    if (!canSubmit()) return;
     setLoading(true);
-    const formData = new FormData();
-    formData.append("file", file);
+    const formData_ = new FormData();
+    
+    if (file) {
+      formData_.append("file", file);
+    }
+    
+    formData_.append("jobDescription", formData?.jobDescription ?? "");
+    formData_.append("jobTitle", formData?.jobTitle ?? "");
+    
     try {
       const res = await axios.post(
         "/api/generate-interview-question",
-        formData
+        formData_
       );
       //   save to db
       await dbResponse({
         userId: userDetail?.id,
         questionText: res.data.question,
         status: "pending",
-        resumeUrl: res.data.fileUrl,
+        resumeUrl: res.data.fileUrl && res.data.fileUrl.trim() ? res.data.fileUrl : null,
+        jobDescription: formData?.jobDescription && formData.jobDescription.trim() ? formData.jobDescription : null,
+        jobTitle: formData?.jobTitle && formData.jobTitle.trim() ? formData.jobTitle : null,
       });
     } catch (err) {
       console.log("Error uploading file:", err);
@@ -88,7 +102,7 @@ function InterviewDialogue() {
 
         <DialogFooter className="flex gap-6">
           <Button variant="secondary">Cancel</Button>
-          <Button disabled={!file || loading} onClick={onSubmit}>
+          <Button disabled={!canSubmit() || loading} onClick={onSubmit}>
             {loading && <Loader2Icon className="mr-2 animate-spin" />}
             Proceed
           </Button>

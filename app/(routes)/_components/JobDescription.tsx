@@ -2,27 +2,29 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import React from "react";
 
-function JobDescription({ onHandleInputChange }: any) {
+interface JobDescriptionProps {
+  onHandleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+}
+
+function JobDescription({ onHandleInputChange }: JobDescriptionProps) {
   return (
     <div className="border rounded-2xl p-10">
       <div>
         <label>Job Title</label>
         <Input
           type="text"
+          name="jobTitle"
           placeholder="ex. React Developer"
-          onChange={(event) =>
-            onHandleInputChange("jobTitle", event.target.value)
-          }
+          onChange={onHandleInputChange}
         />
       </div>
       <div className="mt-6">
         <label>Job Description</label>
         <Textarea
+          name="jobDescription"
           placeholder="Type your message here."
           className="h-[200px]"
-          onChange={(event) =>
-            onHandleInputChange("jobDescription", event.target.value)
-          }
+          onChange={onHandleInputChange}
         />
       </div>
     </div>
