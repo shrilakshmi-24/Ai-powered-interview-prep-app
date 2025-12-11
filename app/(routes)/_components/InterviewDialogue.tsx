@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,15 +12,49 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ResumeUpload from "./ResumeUpload";
 import JobDescription from "./JobDescription";
+import axios from "axios";
+import { Loader2Icon } from "lucide-react";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { UserContextDetails } from "@/app/context/userContextDetails";
 
 function InterviewDialogue() {
   const [formData, setFormData] = useState<any>();
+  const [file, setFiles] = useState<File | null>(null);
+  const { userDetail, setUserDetail } = useContext(UserContextDetails);
+  const [loading, setLoading] = useState(false);
+  const dbResponse = useMutation(api.interview.saveInterviewQuestion);
+
   const onHandleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
+  };
+
+  const onSubmit = async () => {
+    if (!file) return;
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const res = await axios.post(
+        "/api/generate-interview-question",
+        formData
+      );
+      //   save to db
+      await dbResponse({
+        userId: userDetail?.id,
+        questionText: res.data.question,
+        status: "pending",
+        resumeUrl: res.data.fileUrl,
+      });
+    } catch (err) {
+      console.log("Error uploading file:", err);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <Dialog>
@@ -44,7 +78,7 @@ function InterviewDialogue() {
           </TabsList>
 
           <TabsContent value="upload-resume">
-            <ResumeUpload />
+            <ResumeUpload setFiles={(file: File) => setFiles(file)} />
           </TabsContent>
 
           <TabsContent value="job-description">
@@ -54,7 +88,10 @@ function InterviewDialogue() {
 
         <DialogFooter className="flex gap-6">
           <Button variant="secondary">Cancel</Button>
-          <Button>Proceed</Button>
+          <Button disabled={!file || loading} onClick={onSubmit}>
+            {loading && <Loader2Icon className="mr-2 animate-spin" />}
+            Proceed
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

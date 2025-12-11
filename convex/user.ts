@@ -14,7 +14,12 @@ export const CreateNewUser = mutation({
             .first();
         
         if (existingUser) {
-            return existingUser._id;
+            return {
+                id: existingUser._id,
+                name: existingUser.name,
+                email: existingUser.email,
+                image: existingUser.image,
+            };
         }
         
         const userId = await ctx.db.insert("users", {
@@ -23,6 +28,11 @@ export const CreateNewUser = mutation({
             image: args.image,
         });
         
-        return userId;
+        return {
+            id: userId,
+            name: args.name,
+            email: args.email,
+            image: args.image,
+        };
     }
 });
