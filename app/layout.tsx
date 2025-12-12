@@ -3,6 +3,7 @@ import { Outfit } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { ConvexClientProvider } from "./_components/ConvexClientProvider";
+import { Toaster } from "sonner";
 
 export const outfit = Outfit({
   subsets: ["latin"],
@@ -23,6 +24,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={outfit.className}>
           <ConvexClientProvider>{children}</ConvexClientProvider>
+           <Toaster />
         </body>
       </html>
     </ClerkProvider>

@@ -17,13 +17,18 @@ import { Loader2Icon } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { UserContextDetails } from "@/app/context/userContextDetails";
+import { useRouter } from "next/navigation";
+
 
 function InterviewDialogue() {
   const [formData, setFormData] = useState<any>();
   const [file, setFiles] = useState<File | null>(null);
+  const [open, setOpen] = useState(false);
   const { userDetail, setUserDetail } = useContext(UserContextDetails);
   const [loading, setLoading] = useState(false);
   const dbResponse = useMutation(api.interview.saveInterviewQuestion);
+  const router = useRouter()
+
 
   const onHandleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -31,6 +36,13 @@ function InterviewDialogue() {
       ...formData,
       [name]: value,
     });
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+    // Reset form data when canceling
+    setFormData({});
+    setFiles(null);
   };
 
   const canSubmit = () => {
@@ -66,7 +78,7 @@ function InterviewDialogue() {
         formData_
       );   
       //   save to db
-      await dbResponse({
+     const objectId = await dbResponse({
         userId: userDetail?.id,
         questionText: res.data.question,
         status: "pending",
@@ -74,14 +86,18 @@ function InterviewDialogue() {
         jobDescription: formData?.jobDescription && formData.jobDescription.trim() ? formData.jobDescription : null,
         jobTitle: formData?.jobTitle && formData.jobTitle.trim() ? formData.jobTitle : null,
       });
+
+      console.log("Stored Data:", objectId);
+      router.push('/interview/'+objectId);
     } catch (err) {
       console.log("Error uploading file:", err);
     } finally {
       setLoading(false);
     }
   };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size={"lg"}>+ Create Interview</Button>
       </DialogTrigger>
@@ -110,8 +126,9 @@ function InterviewDialogue() {
           </TabsContent>
         </Tabs>
 
+
         <DialogFooter className="flex gap-6">
-          <Button variant="secondary">Cancel</Button>
+          <Button variant="secondary" onClick={handleCancel}>Cancel</Button>
           <Button disabled={!canSubmit() || loading} onClick={onSubmit}>
             {loading && <Loader2Icon className="mr-2 animate-spin" />}
             Proceed

@@ -3,6 +3,7 @@ import axios from "axios";
 import ImageKit from "imagekit";
 import { NextRequest, NextResponse } from "next/server";
 import { aj } from "@/app/utils/arcjet";
+import { toast } from "sonner";
 
 var imagekit = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY || "",
@@ -17,6 +18,7 @@ export async function POST(request: NextRequest) {
   
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {
+      toast.warning("Interview limit exceeded. You can only take one interview per day. Please try again tomorrow.");
       return NextResponse.json(
         { error: "Interview limit exceeded. You can only take one interview per day. Please try again tomorrow." },
         { status: 429 }
