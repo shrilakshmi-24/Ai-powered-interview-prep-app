@@ -11,13 +11,14 @@ var imagekit = new ImageKit({
 });
 
 export async function POST(request: NextRequest) {
+
   // Apply Arcjet protection
   const decision = await aj.protect(request, { requested: 1 });
   
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {
       return NextResponse.json(
-        { error: "Too many requests. Please try again later." },
+        { error: "Interview limit exceeded. You can only take one interview per day. Please try again tomorrow." },
         { status: 429 }
       );
     }

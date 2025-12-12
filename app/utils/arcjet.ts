@@ -1,4 +1,5 @@
 
+
 import arcjet, { detectBot, tokenBucket } from "@arcjet/next";
 
 // Create an Arcjet instance with multiple rules
@@ -7,9 +8,9 @@ export const aj = arcjet({
   rules: [
     tokenBucket({
       mode: "LIVE", // will block requests. Use "DRY_RUN" to log only
-      refillRate: 5, // refill 5 tokens per interval
-      interval: 10, // refill every 10 seconds
-      capacity: 10, // bucket maximum capacity of 10 tokens
+      refillRate: 1, // refill 1 token per interval
+      interval: 86400, // refill every 24 hours (86400 seconds)
+      capacity: 1, // bucket maximum capacity of 1 token - allows only 1 interview per 24 hours
     }),
     detectBot({
       mode: "LIVE",
