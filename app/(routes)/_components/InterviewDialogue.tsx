@@ -39,7 +39,17 @@ function InterviewDialogue() {
   };
 
   const onSubmit = async () => {
-    if (!canSubmit()) return;
+    
+    if (!canSubmit()) {
+      console.log("Cannot submit - validation failed");
+      return;
+    }
+    
+    if (!userDetail?.id) {
+      console.log("Cannot submit - userDetail or userDetail.id is missing");
+      return;
+    }
+    
     setLoading(true);
     const formData_ = new FormData();
     
@@ -54,7 +64,7 @@ function InterviewDialogue() {
       const res = await axios.post(
         "/api/generate-interview-question",
         formData_
-      );
+      );   
       //   save to db
       await dbResponse({
         userId: userDetail?.id,

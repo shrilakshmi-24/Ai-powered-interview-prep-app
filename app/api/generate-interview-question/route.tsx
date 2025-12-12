@@ -1,6 +1,8 @@
+
 import axios from "axios";
 import ImageKit from "imagekit";
 import { NextRequest, NextResponse } from "next/server";
+import { aj } from "@/app/utils/arcjet";
 
 var imagekit = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY || "",
@@ -9,6 +11,22 @@ var imagekit = new ImageKit({
 });
 
 export async function POST(request: NextRequest) {
+  // Apply Arcjet protection
+  const decision = await aj.protect(request, { requested: 1 });
+  
+  if (decision.isDenied()) {
+    if (decision.reason.isRateLimit()) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429 }
+      );
+    }
+    return NextResponse.json(
+      { error: "Request blocked" },
+      { status: 403 }
+    );
+  }
+
   const formData = await request.formData();
   const file = formData.get("file") as File;
   const jobDescription = formData.get("jobDescription") as string;
