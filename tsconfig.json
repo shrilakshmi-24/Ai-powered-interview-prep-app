@@ -22,13 +22,16 @@
       "@/*": ["./*"]
     }
   },
+
+
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
-, "app/api/generate-interview-question"  ],
+    "**/*.mts",
+    "types/**/*"
+  ],
   "exclude": ["node_modules"]
 }
