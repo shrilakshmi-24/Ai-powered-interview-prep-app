@@ -1,19 +1,20 @@
+
 // ImageKit configuration for server-side use only
 // This file should NOT be imported by client components
 
 // ImageKit configuration
 export const imagekitConfig = {
-  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || "",
+  publicKey: process.env.IMAGEKIT_PUBLIC_KEY || "",
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
-  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || ""
+  urlEndpoint: process.env.IMAGEKIT_URL || ""
 };
 
 // Validate ImageKit configuration
 export function validateImageKitConfig() {
   const requiredVars = [
-    'NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY',
+    'IMAGEKIT_PUBLIC_KEY',
     'IMAGEKIT_PRIVATE_KEY',
-    'NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT'
+    'IMAGEKIT_URL'
   ];
   
   const missingVars = requiredVars.filter(varName => !process.env[varName]);

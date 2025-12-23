@@ -1,10 +1,11 @@
 import { UserButton } from "@clerk/nextjs";
-import React from "react";
+import Link from "next/link";
 
 const menuOption = [
   { name: "Dashboard", href: "/dashboard" },
   { name: "Upgrade", href: "/upgrade" },
   { name: "How it works", href: "/how-it-works" },
+  { name: "interviews", href: "/interview" },
 ];
 
 function AppHeader() {
@@ -17,9 +18,12 @@ function AppHeader() {
       <ul className="flex items-center gap-4 text-sm font-medium md:text-base">
         {menuOption.map((option) => (
           <li key={option.href}>
-            <a href={option.href} className="hover:underline">
+            <Link
+              href={option.href}
+              className="hover:underline active:underline"
+            >
               {option.name}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>
